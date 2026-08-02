@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geoachse Pelka — Vermessungsbüro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --ink:#15233A;
+    --paper:#F7F5EF;
+    --brass:#A9824B;
+    --brass-dark:#86643A;
+    --marker:#B5402B;
+    --line:#D8D3C4;
+    --grey:#5B6472;
+    --white:#FFFFFF;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    line-height:1.05;
+    letter-spacing:-0.01em;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  :focus-visible{outline:2px solid var(--brass); outline-offset:3px;}
+
+  .wrap{max-width:1160px; margin:0 auto; padding:0 32px;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(247,245,239,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px;
+    max-width:1160px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.18rem;
+  }
+  .brand-mark{
+    width:30px; height:30px; flex-shrink:0;
+  }
+  .nav-links{display:flex; gap:32px; font-size:0.95rem;}
+  .nav-links a{position:relative; padding:4px 0; color:var(--ink);}
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--brass); transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{
+    background:var(--ink); color:var(--paper);
+    padding:10px 20px; border-radius:2px; font-size:0.9rem; font-weight:500;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--brass-dark);}
+  .burger{display:none; background:none; border:none; cursor:pointer; padding:6px;}
+  .burger span{display:block; width:24px; height:2px; background:var(--ink); margin:5px 0;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:96px 0 80px;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.45;
+    mask-image:linear-gradient(to bottom, black 0%, black 55%, transparent 95%);
+  }
+  .hero-inner{
+    position:relative; z-index:2;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem;
+    color:var(--brass-dark); text-transform:uppercase; letter-spacing:0.12em;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{content:"+"; font-size:1rem;}
+  .hero h1{
+    font-size:clamp(2.4rem, 4.2vw, 3.6rem);
+    margin-bottom:22px;
+  }
+  .hero h1 em{
+    font-style:normal; color:var(--brass-dark);
+    border-bottom:2px solid var(--marker);
+  }
+  .hero p{
+    font-size:1.08rem; color:var(--grey); max-width:46ch; margin-bottom:34px;
+  }
+  .hero-actions{display:flex; gap:16px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--ink); color:var(--paper);
+    padding:14px 26px; border-radius:2px; font-weight:500; font-size:0.96rem;
+    display:inline-block; border:1px solid var(--ink);
+  }
+  .btn-primary:hover{background:transparent; color:var(--ink);}
+  .btn-secondary{
+    padding:14px 26px; border-radius:2px; font-weight:500; font-size:0.96rem;
+    border:1px solid var(--grey); display:inline-block;
+  }
+  .btn-secondary:hover{border-color:var(--ink);}
+
+  /* survey plat illustration */
+  .plat{
+    position:relative;
+    background:var(--white);
+    border:1px solid var(--line);
+    box-shadow:0 18px 50px -20px rgba(21,35,58,0.25);
+    padding:18px;
+  }
+  .plat svg{width:100%; height:auto; display:block;}
+  .plat-caption{
+    display:flex; justify-content:space-between;
+    margin-top:12px; font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--grey);
+  }
+
+  /* ---------- TRUST STRIP ---------- */
+  .trust{
+    border-bottom:1px solid var(--line);
+    padding:22px 0;
+  }
+  .trust .wrap{
+    display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color:var(--grey);
+  }
+  .trust span b{color:var(--ink); font-weight:600;}
+
+  /* ---------- SECTION LABEL ---------- */
+  .section{padding:88px 0;}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:24px; margin-bottom:48px; flex-wrap:wrap;
+  }
+  .section-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem;
+    color:var(--brass-dark); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:10px; display:block;
+  }
+  .section-head h2{font-size:clamp(1.8rem, 3vw, 2.4rem);}
+  .section-head p{color:var(--grey); max-width:42ch;}
+
+  /* ---------- SERVICES ---------- */
+  .services{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+  }
+  .service-card{
+    background:var(--paper); padding:34px 28px;
+    transition:background .2s ease;
+  }
+  .service-card.featured{background:var(--ink); color:var(--paper);}
+  .service-card.featured .service-num,
+  .service-card.featured h3{color:var(--paper);}
+  .service-card.featured p{color:#C7CDD8;}
+  .service-num{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color:var(--brass-dark);
+    display:block; margin-bottom:18px;
+  }
+  .service-card h3{font-size:1.18rem; margin-bottom:12px;}
+  .service-card p{color:var(--grey); font-size:0.94rem; line-height:1.55;}
+
+  /* ---------- PROCESS ---------- */
+  .process-list{border-top:1px solid var(--line);}
+  .process-item{
+    display:grid; grid-template-columns:90px 1fr 1.4fr; gap:24px;
+    padding:28px 0; border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  .process-item .pnum{
+    font-family:'IBM Plex Mono', monospace; font-size:0.85rem; color:var(--marker);
+  }
+  .process-item h4{font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem;}
+  .process-item p{color:var(--grey); font-size:0.94rem;}
+
+  /* ---------- ABOUT ---------- */
+  .about{
+    display:grid; grid-template-columns:0.85fr 1.15fr; gap:64px; align-items:center;
+  }
+  .about-photo{
+    aspect-ratio:4/5; background:var(--ink);
+    position:relative; overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .about-photo .coord{
+    position:absolute; font-family:'IBM Plex Mono', monospace; font-size:0.7rem;
+    color:rgba(247,245,239,0.55);
+  }
+  .about-photo .c1{top:18px; left:18px;}
+  .about-photo .c2{bottom:18px; right:18px;}
+  .about-photo svg{position:absolute; inset:0; width:100%; height:100%;}
+  .about h2{font-size:clamp(1.7rem,2.8vw,2.2rem); margin-bottom:20px;}
+  .about p{color:var(--grey); margin-bottom:18px; line-height:1.65;}
+  .qual-list{list-style:none; margin-top:24px;}
+  .qual-list li{
+    display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line);
+    font-size:0.92rem;
+  }
+  .qual-list li:last-child{border-bottom:1px solid var(--line);}
+  .qual-list li::before{content:"—"; color:var(--brass-dark); font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- TESTIMONIAL ---------- */
+  .testimonial{
+    background:var(--ink); color:var(--paper);
+    padding:80px 0;
+  }
+  .testimonial .wrap{max-width:760px;}
+  .testimonial blockquote{
+    font-family:'Fraunces', serif; font-weight:500; font-size:clamp(1.3rem,2.4vw,1.7rem);
+    line-height:1.45; margin-bottom:24px;
+  }
+  .testimonial cite{
+    font-style:normal; font-family:'IBM Plex Mono', monospace; font-size:0.85rem; color:#B7C0CE;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px;
+  }
+  .contact-info h2{font-size:clamp(1.8rem,3vw,2.3rem); margin-bottom:18px;}
+  .contact-info p{color:var(--grey); margin-bottom:28px; max-width:40ch;}
+  .contact-row{
+    display:flex; gap:16px; padding:16px 0; border-top:1px solid var(--line); align-items:baseline;
+  }
+  .contact-row:last-of-type{border-bottom:1px solid var(--line);}
+  .contact-row .label{
+    font-family:'IBM Plex Mono', monospace; font-size:0.75rem; color:var(--brass-dark);
+    text-transform:uppercase; letter-spacing:0.08em; width:90px; flex-shrink:0;
+  }
+  .contact-row a{font-weight:500;}
+  .contact-row a:hover{color:var(--brass-dark);}
+
+  form{display:flex; flex-direction:column; gap:18px;}
+  .field label{
+    display:block; font-family:'IBM Plex Mono', monospace; font-size:0.75rem;
+    text-transform:uppercase; letter-spacing:0.08em; color:var(--grey); margin-bottom:8px;
+  }
+  .field input, .field textarea, .field select{
+    width:100%; border:1px solid var(--line); background:var(--white);
+    padding:12px 14px; font-family:'IBM Plex Sans', sans-serif; font-size:0.96rem; color:var(--ink);
+    border-radius:2px;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{border-color:var(--brass);}
+  .field textarea{resize:vertical; min-height:110px;}
+  .submit-btn{
+    background:var(--marker); color:var(--white); border:none;
+    padding:15px 26px; font-weight:600; font-size:0.96rem; cursor:pointer; border-radius:2px;
+    align-self:flex-start; margin-top:6px;
+  }
+  .submit-btn:hover{background:#943322;}
+  .form-note{font-size:0.8rem; color:var(--grey);}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line); padding:40px 0; margin-top:40px;
+  }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+  }
+  .foot-brand{font-family:'Fraunces', serif; font-weight:600;}
+  .foot-meta{font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color:var(--grey); display:flex; gap:24px; flex-wrap:wrap;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:880px){
+    .hero-inner{grid-template-columns:1fr;}
+    .plat{order:-1;}
+    .services{grid-template-columns:1fr;}
+    .process-item{grid-template-columns:50px 1fr; }
+    .process-item p{grid-column:2/3;}
+    .about{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0; background:var(--paper);
+      flex-direction:column; padding:20px 32px; gap:18px; border-bottom:1px solid var(--line);
+      display:none;
+    }
+    .nav-links.open{display:flex;}
+    .burger{display:block;}
+    .nav-cta{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="15" r="13.5" stroke="#15233A" stroke-width="1.2"/>
+        <line x1="15" y1="2" x2="15" y2="28" stroke="#A9824B" stroke-width="1.2"/>
+        <line x1="2" y1="15" x2="28" y2="15" stroke="#A9824B" stroke-width="1.2"/>
+        <circle cx="15" cy="15" r="2.6" fill="#B5402B"/>
+      </svg>
+      Geoachse Pelka
+    </a>
+    <button class="burger" aria-label="Menü öffnen" id="burgerBtn">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#ablauf">Ablauf</a>
+      <a href="#ueber">Über uns</a>
+      <a href="#kontakt">Kontakt</a>
+    </div>
+    <a class="nav-cta" href="#kontakt">Anfrage stellen</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <div>
+        <span class="eyebrow">Vermessungsbüro · Region &amp; Umgebung</span>
+        <h1>Grenzen, die <em>auf den Millimeter</em> stimmen.</h1>
+        <p>Geoachse Pelka erstellt rechtssichere Grenzvermessungen und Lagepläne für Eigentümer, Bauherren und Architekten — präzise, dokumentiert und termingerecht.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#kontakt">Kostenlose Erstberatung</a>
+          <a class="btn-secondary" href="#leistungen">Leistungen ansehen</a>
+        </div>
+      </div>
+      <div class="plat">
+        <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,40 300,55 280,230 90,250" fill="none" stroke="#15233A" stroke-width="1.4"/>
+          <line x1="60" y1="40" x2="300" y2="55" stroke="#A9824B" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="300" y1="55" x2="280" y2="230" stroke="#A9824B" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="280" y1="230" x2="90" y2="250" stroke="#A9824B" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="90" y1="250" x2="60" y2="40" stroke="#A9824B" stroke-width="1" stroke-dasharray="4 3"/>
+          <circle cx="60" cy="40" r="3.5" fill="#B5402B"/>
+          <circle cx="300" cy="55" r="3.5" fill="#B5402B"/>
+          <circle cx="280" cy="230" r="3.5" fill="#B5402B"/>
+          <circle cx="90" cy="250" r="3.5" fill="#B5402B"/>
+          <text x="64" y="32" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5B6472">P1 · 34.402.118 / 56.901.224</text>
+          <text x="200" y="47" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5B6472">P2</text>
+          <text x="280" y="248" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5B6472">P3</text>
+          <text x="20" y="262" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5B6472">P4</text>
+          <text x="150" y="150" font-family="Fraunces, serif" font-size="14" fill="#15233A" text-anchor="middle">Flurstück 412/3</text>
+          <text x="150" y="168" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5B6472" text-anchor="middle">2.184 m²</text>
+        </svg>
+        <div class="plat-caption">
+          <span>LAGEPLAN · MASSSTAB 1:500</span>
+          <span>GEOACHSE PELKA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trust">
+    <div class="wrap">
+      <span><b>20+ Jahre</b> Erfahrung in der Region</span>
+      <span><b>500+</b> abgeschlossene Vermessungen</span>
+      <span><b>Rechtssicher</b> nach amtlichen Vorgaben</span>
+      <span><b>Festtermine</b> innerhalb von 2 Wochen</span>
+    </div>
+  </div>
+
+  <!-- LEISTUNGEN -->
+  <section class="section" id="leistungen">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">Leistungen</span>
+          <h2>Vermessung, der Sie vertrauen können.</h2>
+        </div>
+        <p>Vom einzelnen Grundstück bis zur komplexen Baustelle — jede Leistung wird dokumentiert und nachvollziehbar übergeben.</p>
+      </div>
+      <div class="services">
+        <div class="service-card featured">
+          <span class="service-num">01</span>
+          <h3>Grenzvermessung</h3>
+          <p>Feststellung und Abmarkung von Grundstücksgrenzen nach amtlichem Liegenschaftskataster — Grundlage für Kauf, Bau und Streitvermeidung.</p>
+        </div>
+        <div class="service-card featured">
+          <span class="service-num">02</span>
+          <h3>Lagepläne</h3>
+          <p>Amtliche Lagepläne für Bauanträge, Grundstücksteilungen und Eintragungen ins Grundbuch — präzise und behördenkonform.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">03</span>
+          <h3>Gebäudeeinmessung</h3>
+          <p>Gesetzlich vorgeschriebene Einmessung von Neubauten und Anbauten zur Fortführung des Liegenschaftskatasters.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">04</span>
+          <h3>Bauvermessung</h3>
+          <p>Absteckung von Gebäuden, Höhenkontrolle und Baufortschrittsmessung während der gesamten Bauphase.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">05</span>
+          <h3>Grundstücksteilung</h3>
+          <p>Planung und Umsetzung von Teilungsvermessungen inklusive Abstimmung mit Katasteramt und Notar.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">06</span>
+          <h3>Beratung &amp; Gutachten</h3>
+          <p>Unabhängige Einschätzung bei Grenzstreitigkeiten, Bestandsfragen und vermessungstechnischen Unsicherheiten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABLAUF -->
+  <section class="section" id="ablauf" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">Ablauf</span>
+          <h2>So läuft Ihre Vermessung ab.</h2>
+        </div>
+        <p>Vier klare Schritte, von der ersten Anfrage bis zur Übergabe der Unterlagen.</p>
+      </div>
+      <div class="process-list">
+        <div class="process-item">
+          <span class="pnum mono">A</span>
+          <h4>Anfrage &amp; Beratung</h4>
+          <p>Sie schildern Ihr Anliegen, wir prüfen die Katasterunterlagen und besprechen den Aufwand — unverbindlich und kostenfrei.</p>
+        </div>
+        <div class="process-item">
+          <span class="pnum mono">B</span>
+          <h4>Termin vor Ort</h4>
+          <p>Unser Team führt die Messung mit moderner GNSS- und Tachymeter-Technik direkt auf Ihrem Grundstück durch.</p>
+        </div>
+        <div class="process-item">
+          <span class="pnum mono">C</span>
+          <h4>Auswertung &amp; Dokumentation</h4>
+          <p>Die Daten werden ausgewertet, mit dem Kataster abgeglichen und in Plänen sowie Protokollen aufbereitet.</p>
+        </div>
+        <div class="process-item">
+          <span class="pnum mono">D</span>
+          <h4>Übergabe</h4>
+          <p>Sie erhalten alle Unterlagen in Papier- und digitaler Form — bei Bedarf reichen wir diese direkt beim Amt ein.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÜBER -->
+  <section class="section" id="ueber">
+    <div class="wrap about">
+      <div class="about-photo">
+        <span class="coord c1 mono">52.5200° N</span>
+        <span class="coord c2 mono">13.4050° E</span>
+        <svg viewBox="0 0 300 375" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="0" x2="300" y2="375" stroke="rgba(169,130,75,0.25)" stroke-width="1"/>
+          <line x1="300" y1="0" x2="0" y2="375" stroke="rgba(169,130,75,0.25)" stroke-width="1"/>
+          <circle cx="150" cy="187" r="60" fill="none" stroke="rgba(169,130,75,0.4)" stroke-width="1"/>
+          <circle cx="150" cy="187" r="3" fill="#B5402B"/>
+        </svg>
+      </div>
+      <div>
+        <span class="section-tag">Über Geoachse Pelka</span>
+        <h2>Vermessung mit Handschlagqualität.</h2>
+        <p>Geoachse Pelka ist ein inhabergeführtes Vermessungsbüro mit Sitz in der Region. Wir verbinden klassisches handwerkliches Verständnis für Grund und Boden mit moderner Messtechnik — und sprechen mit unseren Kunden auf Augenhöhe, nicht in Amtsdeutsch.</p>
+        <p>Ob privater Grundstückseigentümer, Architekturbüro oder Bauunternehmen: Wir liefern Ergebnisse, auf die Sie sich vor Gericht, beim Notar und auf der Baustelle verlassen können.</p>
+        <ul class="qual-list">
+          <li>Über 20 Jahre Erfahrung in der Vermessungspraxis</li>
+          <li>Moderne GNSS- und Tachymeter-Messtechnik</li>
+          <li>Enge Abstimmung mit Katasterämtern der Region</li>
+          <li>Festpreise und klare Terminzusagen</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial">
+    <div class="wrap">
+      <blockquote>„Die Grenzvermessung wurde innerhalb von zehn Tagen abgeschlossen — inklusive aller Unterlagen für den Notartermin. Klare Kommunikation, faire Preise.“</blockquote>
+      <cite>— S. Brenner, Bauherr</cite>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="section" id="kontakt">
+    <div class="wrap contact-grid">
+      <div class="contact-info">
+        <span class="section-tag">Kontakt</span>
+        <h2>Lassen Sie uns Ihr Grundstück besprechen.</h2>
+        <p>Schreiben Sie uns Ihr Anliegen oder rufen Sie direkt an — die Erstberatung ist immer kostenfrei.</p>
+        <div class="contact-row">
+          <span class="label">Telefon</span>
+          <a href="tel:+49000000000">+49 (0) 00 000 00 00</a>
+        </div>
+        <div class="contact-row">
+          <span class="label">E-Mail</span>
+          <a href="mailto:info@geoachse-pelka.de">info@geoachse-pelka.de</a>
+        </div>
+        <div class="contact-row">
+          <span class="label">Büro</span>
+          <span>Musterstraße 12, 00000 Musterstadt</span>
+        </div>
+        <div class="contact-row">
+          <span class="label">Zeiten</span>
+          <span>Mo–Fr, 08:00–17:00 Uhr</span>
+        </div>
+      </div>
+      <form id="contactForm" action="https://formsubmit.co/info@geoachse-pelka.de" method="POST">
+        <input type="hidden" name="_subject" value="Neue Anfrage über die Webseite">
+        <input type="hidden" name="_next" value="danke.html">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="email">E-Mail</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="leistung">Gewünschte Leistung</label>
+          <select id="leistung" name="leistung">
+            <option>Grenzvermessung</option>
+            <option>Lageplan</option>
+            <option>Gebäudeeinmessung</option>
+            <option>Bauvermessung</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="nachricht">Nachricht</label>
+          <textarea id="nachricht" name="nachricht" placeholder="Beschreiben Sie kurz Ihr Grundstück und Anliegen…"></textarea>
+        </div>
+        <button class="submit-btn" type="submit">Anfrage senden</button>
+        <p class="form-note">Mit dem Absenden erklären Sie sich einverstanden, dass wir Ihre Angaben zur Bearbeitung der Anfrage nutzen.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="foot-brand">Geoachse Pelka</span>
+    <div class="foot-meta">
+      <span>© 2026 Geoachse Pelka</span>
+      <a href="impressum.html">Impressum</a>
+      <a href="impressum.html#datenschutz">Datenschutz</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const burgerBtn = document.getElementById('burgerBtn');
+  const navLinks = document.getElementById('navLinks');
+  burgerBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  // Hinweis: Das echte Absenden übernimmt FormSubmit.co (siehe form action oben).
+  // Kein JS-Eingriff nötig — das Formular sendet ganz normal per POST.
+</script>
+
+</body>
+</html>
