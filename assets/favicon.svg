@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16.933327mm"
+   height="16.933334mm"
+   viewBox="0 0 16.933327 16.933334"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="MinimalLogo.svg"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.20275573"
+     inkscape:cx="-34.524302"
+     inkscape:cy="310.71872"
+     inkscape:window-width="1344"
+     inkscape:window-height="449"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-113.50625,-68.262497)">
+    <circle
+       cx="121.97292"
+       cy="76.729164"
+       r="7.1437497"
+       stroke="#15233a"
+       stroke-width="0.423333"
+       fill="none"
+       id="circle1" />
+    <line
+       x1="121.97292"
+       y1="68.262497"
+       x2="121.97292"
+       y2="85.195831"
+       stroke="#a9824b"
+       stroke-width="0.423333"
+       id="line1" />
+    <line
+       x1="113.50625"
+       y1="76.729164"
+       x2="130.43958"
+       y2="76.729164"
+       stroke="#a9824b"
+       stroke-width="0.423333"
+       id="line2" />
+    <circle
+       cx="121.97292"
+       cy="76.729164"
+       r="1.3229166"
+       fill="#b5402b"
+       id="circle2"
+       style="stroke-width:0.264583" />
+  </g>
+</svg>
